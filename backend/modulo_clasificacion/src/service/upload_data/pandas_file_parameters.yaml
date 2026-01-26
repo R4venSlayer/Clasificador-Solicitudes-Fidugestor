@@ -1,0 +1,32 @@
+
+base:
+
+  base_inicial:
+      file_extension: xlsx
+      sheet_name: Hoja1
+      skip_rows: 0
+
+  base_accion_grupo:
+      file_extension: xlsx
+      sheet_name: Hoja1
+      skip_rows: 0
+
+  base_fallos_favor:
+      file_extension: xlsx
+      sheet_name:  Detalle
+      skip_rows: 0
+
+  base_pension_gracia:
+      file_extension: xlsx
+      sheet_name: Hoja1
+      skip_rows: 1
+
+  base_pensionado_fec_status:
+      file_extension: csv
+      sheet_name:  None
+      skip_rows: 0
+
+  base_pensionado_fec_vinc:
+      file_extension: xlsx
+      sheet_name: in
+      skip_rows: 0
