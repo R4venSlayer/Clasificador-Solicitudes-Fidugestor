@@ -18,5 +18,5 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('classify/', include('modulo_clasificacion.src.interface.urls'))
+    path('api/', include('modulo_clasificacion.src.interface.urls'))
 ]

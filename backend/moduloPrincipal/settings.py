@@ -75,12 +75,23 @@ WSGI_APPLICATION = 'moduloPrincipal.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+# settings.py
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "mssql",
+        "NAME": "SolicitudesFidugestor",
+        "USER": "solicitudes_fidu_user",
+        "PASSWORD": "12345",
+        "HOST": "localhost, 1434",
+        "OPTIONS": {
+            "driver": "ODBC Driver 17 for SQL Server",
+        },
+        "CONN_MAX_AGE": 60,
     }
 }
+
+
+
 
 
 # Password validation

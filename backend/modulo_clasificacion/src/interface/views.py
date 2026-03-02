@@ -8,13 +8,16 @@ from ..domain.dto.upload_dto import BasesUploadDTO
 
 from ..domain.port.response_http import return_response
 
-from ..service.upload_pipeline import pipeline
+from ..service.upload_data.upload_pipeline import pipeline
 
 from rest_framework.request import Request
+
+from typing import Mapping, Any
 
 class UploadFileView(APIView):
 
     def post(self, request:Request):
+
 
         base_inicial_value = request.FILES.get("base_inicial")
         tipo_base_inicial = request.POST.get("tipo_base_inicial")
@@ -39,13 +42,35 @@ class UploadFileView(APIView):
 
                                     )
 
-        pipeline(dto_object=base_dto)
+        uuid_process_value = pipeline(dto_object=base_dto)
 
-        response_dto_object = ResponseDTO(status_code=200, success=True, message="Prueba", data=None)
+        data_response = [ {"uuid_process_id" : uuid_process_value} ]
+
+        response_dto_object = ResponseDTO(status_code=200, success=True, message="Prueba", data=data_response)
     
         return return_response(dto_object=response_dto_object)
+
+
+class GetProcessView(APIView):
     
+    def get ( self, request:Request ):
 
 
 
+        data_response = [ {"uuid_process_value" : None} ]
+        
+        response_dto_object = ResponseDTO(status_code=200, success=True, message="Prueba", data=data_response)
 
+        return return_response(dto_object=response_dto_object)
+
+        
+
+class DownloadClassifiedView(APIView):
+
+    def get( self, request:Request, uuid_process_value:str ):
+
+        data_response = [ {"uuid_export_value" : None} ]
+        
+        response_dto_object = ResponseDTO(status_code=200, success=True, message="Prueba", data=data_response)
+
+        return return_response(dto_object=response_dto_object)
