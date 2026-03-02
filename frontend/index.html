@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluador de solicitudes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .file-drop-container {
+            margin-bottom: 25px;
+            padding: 20px;
+            background-color: #fafafa;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .file-drop-container label {
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            background-color: white;
+            color: #333;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+
+        select:hover {
+            border-color: #667eea;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .drag-drop-area {
+            border: 3px dashed #667eea;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .drag-drop-area:hover {
+            background-color: #f0f2ff;
+            border-color: #764ba2;
+        }
+
+        .drag-drop-area.dragover {
+            background-color: #e8ebff;
+            border-color: #764ba2;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .drag-drop-area p {
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .drag-drop-area .subtitle {
+            color: #999;
+            font-size: 14px;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .fileInput {
+            display: none;
+        }
+
+        .upload-button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .upload-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .upload-button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .upload-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .alert.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .alert.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        .alert.loading {
+            background-color: #cfe2ff;
+            color: #084298;
+            border: 1px solid #b6d4fe;
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .file-requirements {
+            background-color: #fafafa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #666;
+            display: none;
+        }
+
+        .file-requirements h3 {
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .file-requirements ul {
+            margin-left: 20px;
+        }
+
+        .file-requirements li {
+            margin-bottom: 5px;
+        }
+
+        .file-display {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: white;
+            border-radius: 6px;
+            min-height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .file-display.has-file {
+            background-color: #e8f5e9;
+            border: 1px solid #4caf50;
+        }
+
+        .file-display .file-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .file-display .file-name {
+            color: #2e7d32;
+            font-weight: 600;
+            font-size: 13px;
+            word-break: break-word;
+        }
+
+        .file-display .file-remove-btn {
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+            transition: background-color 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .file-display .file-remove-btn:hover {
+            background-color: #ff5252;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .drag-drop-area {
+                padding: 25px;
+            }
+
+            .file-display {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .file-display .file-remove-btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .file-drop-container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📁 Sistema de Evaluación de Solicitudes</h1>
+
+        <form id="uploadForm">
+            <div class="form-group">
+                <label for="tipoBaseInicial">Tipo de Base Inicial:</label>
+                <select id="tipoBaseInicial" name="tipo_base_inicial" required>
+                    <option value="">-- Selecciona una opción --</option>
+                    <option value="tutelas">Tutelas</option>
+                    <option value="solicitudes fidugestor">Solicitudes Fidugestor</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <h2 style="font-size: 18px; color: #333; margin-bottom: 20px;">Carga los archivos necesarios:</h2>
+                
+                <!-- Base Inicial (Requerido) -->
+                <div class="file-drop-container">
+                    <label for="baseInicial">📄 Base Inicial <span style="color: #ff6b6b;">*</span></label>
+                    <div class="drag-drop-area" data-field="base_inicial">
+                        <p>Arrastra aquí</p>
+                        <p class="subtitle">o haz clic para seleccionar</p>
+                    </div>
+                    <input type="file" class="fileInput" data-field="base_inicial" accept=".xlsx,.xls,.csv,.pdf">
+                    <div class="file-display" data-field="base_inicial"></div>
+                </div>
+
+                <!-- Base Acción Grupo -->
+                <div class="file-drop-container">
+                    <label for="baseAccionGrupo">📄 Base Acción Grupo</label>
+                    <div class="drag-drop-area" data-field="base_accion_grupo">
+                        <p>Arrastra aquí</p>
+                        <p class="subtitle">o haz clic para seleccionar</p>
+                    </div>
+                    <input type="file" class="fileInput" data-field="base_accion_grupo" accept=".xlsx,.xls,.csv,.pdf">
+                    <div class="file-display" data-field="base_accion_grupo"></div>
+                </div>
+
+                <!-- Base Fallos a Favor -->
+                <div class="file-drop-container">
+                    <label for="baseFallos">📄 Base Fallos a Favor</label>
+                    <div class="drag-drop-area" data-field="base_fallos_favor">
+                        <p>Arrastra aquí</p>
+                        <p class="subtitle">o haz clic para seleccionar</p>
+                    </div>
+                    <input type="file" class="fileInput" data-field="base_fallos_favor" accept=".xlsx,.xls,.csv,.pdf">
+                    <div class="file-display" data-field="base_fallos_favor"></div>
+                </div>
+
+                <!-- Base Pensión Gracia -->
+                <div class="file-drop-container">
+                    <label for="basePension">📄 Base Pensión Gracia</label>
+                    <div class="drag-drop-area" data-field="base_pension_gracia">
+                        <p>Arrastra aquí</p>
+                        <p class="subtitle">o haz clic para seleccionar</p>
+                    </div>
+                    <input type="file" class="fileInput" data-field="base_pension_gracia" accept=".xlsx,.xls,.csv,.pdf">
+                    <div class="file-display" data-field="base_pension_gracia"></div>
+                </div>
+
+                <!-- Base Pensionado Fec Status -->
+                <div class="file-drop-container">
+                    <label for="basePensionadoStatus">📄 Base Pensionado Fec Status</label>
+                    <div class="drag-drop-area" data-field="base_pensionado_fec_status">
+                        <p>Arrastra aquí</p>
+                        <p class="subtitle">o haz clic para seleccionar</p>
+                    </div>
+                    <input type="file" class="fileInput" data-field="base_pensionado_fec_status" accept=".xlsx,.xls,.csv,.pdf">
+                    <div class="file-display" data-field="base_pensionado_fec_status"></div>
+                </div>
+
+                <!-- Base Pensionado Fec Vinc -->
+                <div class="file-drop-container">
+                    <label for="basePensionadoVinc">📄 Base Pensionado Fec Vinc</label>
+                    <div class="drag-drop-area" data-field="base_pensionado_fec_vinc">
+                        <p>Arrastra aquí</p>
+                        <p class="subtitle">o haz clic para seleccionar</p>
+                    </div>
+                    <input type="file" class="fileInput" data-field="base_pensionado_fec_vinc" accept=".xlsx,.xls,.csv,.pdf">
+                    <div class="file-display" data-field="base_pensionado_fec_vinc"></div>
+                </div>
+            </div>
+
+            <button type="submit" class="upload-button" id="uploadBtn">
+                📤 Cargar archivos
+            </button>
+
+            <div id="alert" class="alert"></div>
+        </form>
+    </div>
+
+    <script>
+        const uploadForm = document.getElementById('uploadForm');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const alert = document.getElementById('alert');
+        const tipoBaseInicial = document.getElementById('tipoBaseInicial');
+
+        // Objeto para almacenar archivos por campo
+        const selectedFiles = {
+            'base_inicial': null,
+            'base_accion_grupo': null,
+            'base_fallos_favor': null,
+            'base_pension_gracia': null,
+            'base_pensionado_fec_status': null,
+            'base_pensionado_fec_vinc': null
+        };
+
+        // Configurar eventos para cada zona de drag and drop
+        document.querySelectorAll('.drag-drop-area').forEach(dragDropArea => {
+            const field = dragDropArea.getAttribute('data-field');
+            const fileInput = document.querySelector(`input.fileInput[data-field="${field}"]`);
+
+            // Click en el área para seleccionar archivo
+            dragDropArea.addEventListener('click', () => fileInput.click());
+
+            // Drag over
+            dragDropArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dragDropArea.classList.add('dragover');
+            });
+
+            // Drag leave
+            dragDropArea.addEventListener('dragleave', () => {
+                dragDropArea.classList.remove('dragover');
+            });
+
+            // Drop
+            dragDropArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dragDropArea.classList.remove('dragover');
+                const files = Array.from(e.dataTransfer.files);
+                if (files.length > 0) {
+                    selectedFiles[field] = files[0];
+                    renderFileDisplay(field);
+                }
+            });
+
+            // File input change
+            fileInput.addEventListener('change', (e) => {
+                const files = Array.from(e.target.files);
+                if (files.length > 0) {
+                    selectedFiles[field] = files[0];
+                    renderFileDisplay(field);
+                }
+            });
+        });
+
+        function renderFileDisplay(field) {
+            const fileDisplay = document.querySelector(`.file-display[data-field="${field}"]`);
+            const file = selectedFiles[field];
+
+            if (file) {
+                const fileSize = (file.size / 1024 / 1024).toFixed(2);
+                fileDisplay.classList.add('has-file');
+                fileDisplay.innerHTML = `
+                    <div class="file-info">
+                        <span class="file-name">✅ ${file.name} (${fileSize} MB)</span>
+                    </div>
+                    <button type="button" class="file-remove-btn" onclick="removeFile('${field}')">
+                        Eliminar
+                    </button>
+                `;
+            } else {
+                fileDisplay.classList.remove('has-file');
+                fileDisplay.innerHTML = '';
+            }
+        }
+
+        function removeFile(field) {
+            selectedFiles[field] = null;
+            const fileInput = document.querySelector(`input.fileInput[data-field="${field}"]`);
+            fileInput.value = '';
+            renderFileDisplay(field);
+        }
+
+        uploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!tipoBaseInicial.value) {
+                showAlert('Por favor, selecciona un tipo de base inicial', 'error');
+                return;
+            }
+
+            if (!selectedFiles['base_inicial']) {
+                showAlert('Por favor, carga la Base Inicial (archivo requerido)', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('tipo_base_inicial', tipoBaseInicial.value);
+
+            // Agregar archivos al FormData
+            Object.keys(selectedFiles).forEach(field => {
+                if (selectedFiles[field]) {
+                    formData.append(field, selectedFiles[field]);
+                }
+            });
+
+            uploadBtn.disabled = true;
+            showAlert('Cargando archivos... Por favor espera', 'loading');
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/uploads/', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showAlert('✅ Se han cargado correctamente los archivos', 'success');
+                    
+                    // Limpiar formulario
+                    Object.keys(selectedFiles).forEach(field => {
+                        selectedFiles[field] = null;
+                        const fileInput = document.querySelector(`input.fileInput[data-field="${field}"]`);
+                        fileInput.value = '';
+                        renderFileDisplay(field);
+                    });
+                    uploadForm.reset();
+                    tipoBaseInicial.value = '';
+
+                    // Ocultar alerta después de 5 segundos
+                    setTimeout(() => {
+                        alert.style.display = 'none';
+                    }, 5000);
+                } else {
+                    const errorData = await response.json();
+                    showAlert(`❌ Error: ${errorData.message || 'Ocurrió un error al cargar los archivos'}`, 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('❌ Error de conexión: ' + error.message, 'error');
+            } finally {
+                uploadBtn.disabled = false;
+            }
+        });
+
+        function showAlert(message, type) {
+            alert.textContent = message;
+            alert.className = `alert ${type}`;
+            alert.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
