@@ -23,10 +23,13 @@ class FileReader:
         if file_extension == "xlsx":
             df = pd.read_excel(file_path, sheet_name = s_name, skiprows=skip_rows_number) 
         
+            return  df
+        
         elif file_extension == "csv":
             df = pd.read_csv(file_path, sep=";", encoding="latin1")
 
-        return df
+            return df 
+        
     
     def open_yaml_content(self, file_path:Path):
         """
@@ -35,11 +38,11 @@ class FileReader:
         Método encargado de abrir el contenido de un archivo con extensión yaml
 
         Args:
-        -   file_path (Path) : Ruta del archivo yaml
+            -   file_path (Path) : Ruta del archivo yaml
 
         Return:
 
-
+            -   Dict: Diccionario con los parametros obtenidos
         """
 
         with open(file_path, "r", encoding="utf-8") as f:
