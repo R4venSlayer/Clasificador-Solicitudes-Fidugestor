@@ -2,39 +2,28 @@ base:
 
   base_inicial:
       add_columns:
-        - TIPO_BASE_INICIAL
-        - ID_ARCHIVO
+        - idArchivo
 
-      required_columns: 
-        - RADICADO
-        - PROCESO
-        - NOMBRE_REMITENTE
-        - DOCUMENTO_DE_REMITENTE
-        - TIPO_DE_DOCUMENTO_REMITENTE
-        - EMAIL_REMITENTE
-        - TIPO_BASE_INICIAL
-        - ID_ARCHIVO
-
-      expected_columns_name:
-        - radicado
-        - proceso
-        - nombreAccionante
-        - numDocumentoAccionante
-        - tipoDocumentoAccionante
-        - emailAccionante
-        - idTipoBaseInicial
+      required_columns:
+        - "radicado"
+        - "proceso"
+        - "nombreAccionante"
+        - "numDocumentoAccionante"
+        - "tipoDocumentoRemitente"
+        - "emailRemitente"
         - idArchivo
 
       change_type_to_str:
         - numDocumentoAccionante
 
+
   base_accion_grupo:
       add_columns:
-        - ID_ARCHIVO
+        - idArchivo
 
       required_columns: 
         - CC
-        - ID_ARCHIVO
+        - idArchivo
 
       expected_columns_name:
         - numDocumentoUsuario
@@ -43,11 +32,9 @@ base:
       drop_na:
         - numDocumentoUsuario
 
-      
-        
   base_fallos_favor:
       add_columns:
-        - ID_ARCHIVO
+        - idArchivo
 
       required_columns: 
 
@@ -56,7 +43,7 @@ base:
         - 'CASOS: IDENTIFICACION DEL DEMANDANTE'
         - 'CASOS: Jurisdicción'
         - 'CASOS: ESTADO DEL PROCESO'
-        - ID_ARCHIVO
+        - idArchivo
 
       expected_columns_name:
         - radicadoCaso
@@ -70,15 +57,15 @@ base:
         - numDocumentoDemandante
 
       change_type_to_str:
-        - radicadoCaso
+        - numDocumentoDemandante
 
   base_pension_gracia:
       add_columns:
-        - ID_ARCHIVO
+        - idArchivo
 
       required_columns: 
         - DOCUMENTO
-        - ID_ARCHIVO
+        - idArchivo
 
       expected_columns_name:
         - numDocumentoPensionado
@@ -89,12 +76,12 @@ base:
 
   base_pensionado_fec_status:
       add_columns:
-        - ID_ARCHIVO
+        - idArchivo
 
       required_columns: 
         - DOCUMENTO_DOC
         - FECHA_STATUS
-        - ID_ARCHIVO
+        - idArchivo
 
       expected_columns_name:
         - numDocumentoPensionado
@@ -112,7 +99,7 @@ base:
         
   base_pensionado_fec_vinc:
       add_columns:
-        - ID_ARCHIVO
+        - idArchivo
 
       required_columns: 
 
@@ -120,7 +107,7 @@ base:
         - 'FECHA DE VINCULACIÓN'
         - 'MESADA'
         - 'REGIMEN DE PENSIÓN'
-        - ID_ARCHIVO
+        - idArchivo
 
       expected_columns_name:
         - numDocumentoPensionado

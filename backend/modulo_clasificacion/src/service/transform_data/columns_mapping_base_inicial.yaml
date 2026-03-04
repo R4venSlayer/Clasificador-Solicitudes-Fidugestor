@@ -1,0 +1,27 @@
+
+renamed_columns_name:
+
+    tutelas:
+        "NOMBRE DEL ACCIONANTE": "nombreAccionante"
+        "CEDULA": "numDocumentoAccionante"
+
+    solicitudes:
+        "RADICADO" : "radicado"
+        "PROCESO" : "proceso"
+        "NOMBRE_REMITENTE" : "nombreAccionante"
+        "DOCUMENTO_DE_REMITENTE" : "numDocumentoAccionante"
+        "TIPO_DE_DOCUMENTO_REMITENTE" : "tipoDocumentoRemitente"
+        "EMAIL_REMITENTE" : "emailRemitente"
+
+    consolidado:
+        "NOMBRE_DOCENTE" : "nombreAccionante"
+        "CC DOCENTE" : "numDocumentoAccionante"
+
+required_columns:
+    final:
+        - "radicado"
+        - "proceso"
+        - "nombreAccionante"
+        - "numDocumentoAccionante"
+        - "tipoDocumentoRemitente"
+        - "emailRemitente"
