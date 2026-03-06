@@ -13,6 +13,10 @@ class UsuariosRepository():
         """Obtiene un usuario por su ID."""
         return self.model.get_by_id(id_usuario)
     
+    def get_all_users(self) -> list[Usuarios]:
+        """Obtiene todos los usuarios registrados en la base de datos."""
+        return self.model.objects().all()
+    
     def patch_user(self, id_usuario: str, **kwargs) -> Usuarios:
         """Actualiza parcialmente un usuario existente."""
         return self.model.objects(id_usuario=id_usuario).update(**kwargs)
