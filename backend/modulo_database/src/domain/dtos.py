@@ -216,6 +216,7 @@ class RefreshTokensDTO:
     id_refresh_token: ModelId
     id_usuario_id: ModelId
     token_hash: str
+    fecha_hora_creacion: datetime
     fecha_hora_expiracion: datetime
     revocado: bool
 

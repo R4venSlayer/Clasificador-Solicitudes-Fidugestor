@@ -22,6 +22,7 @@ CREATE TABLE "refresh_tokens" (
   "id_refresh_token" UNIQUEIDENTIFIER  PRIMARY KEY NOT NULL,
   "id_usuario" UNIQUEIDENTIFIER NOT NULL,
   "token_hash" varchar(255) NOT NULL,
+  "fecha_hora_creacion" datetime2 NOT NULL,
   "fecha_hora_expiracion" datetime2 NOT NULL,
   "revocado" bit NOT NULL
 );
