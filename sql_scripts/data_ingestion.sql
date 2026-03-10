@@ -74,10 +74,13 @@ VALUES
 
 -- Ingesta de datos en la tabla ´roles_permisos´ 
 
-INSERT INTO dbo.permisos(id_rol, id_permiso)
+INSERT INTO dbo.roles_permisos (id_rol_permiso, id_rol, id_permiso)
 VALUES
-(1, 'user_manager'),
-(2, 'load_information'),
-(3, 'check_log_auditing'),
-(4, 'execute_process'),
-(5, 'check_historical')
+(NEWID(), 1, 1),
+(NEWID(), 1, 2),
+(NEWID(), 1, 3),
+(NEWID(), 1, 4),
+(NEWID(), 1, 5),
+(NEWID(), 2, 2),
+(NEWID(), 2, 4),
+(NEWID(), 2, 5);
